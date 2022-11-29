@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import DefaultButton from "../../Components/Common/DefaultButton";
 import LifeStatus from "../../Components/Common/LifeStatus";
 
 export default function Start() {
+    const navigation = useNavigation();
 
     const handleNavAppExplanation = () => {
-        console.log("Testando o clique");
+        navigation.navigate("AppExplanation");
       };
-      
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
@@ -24,7 +26,7 @@ export default function Start() {
           </Text>
           <DefaultButton
             buttonText={"Continuar"}
-						handlePress={handleNavAppExplanation}
+			handlePress={handleNavAppExplanation}
             width={250}
             height={50}
           />

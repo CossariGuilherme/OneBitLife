@@ -4,6 +4,7 @@ import { Text, TouchableOpacity, StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function EditHabit({ habit, frequency, habitArea, checkColor }) {
+  const navigation = useNavigation();
 
   function handleEdit() {
     navigation.navigate("HabitPage", {

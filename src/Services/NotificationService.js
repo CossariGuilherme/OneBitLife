@@ -25,7 +25,6 @@ async function createNotification(
   } else if (dayNotification === "Sábado") {
     weekDay = 7;
   }
-}
 
 let triggerNotification;
 if (frequencyInput === "Diário") {
@@ -53,5 +52,6 @@ await Notifications.scheduleNotificationAsync({
 }).then((id) => {
   console.log(id);
 });
+}
 
 export default { createNotification };

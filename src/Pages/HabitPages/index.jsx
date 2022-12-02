@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import * as Notifications from "expo-notifications";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,6 +20,14 @@ import UpdateExcludeButtons from "../../Components/HabitPage/UpdateExcludeButton
 import DefaultButton from "../../Components/Common/DefaultButton";
 
 import HabitsService from "../../Services/HabitsService";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function HabitPage({ route }) {
   const navigation = useNavigation();
@@ -34,6 +43,11 @@ export default function HabitPage({ route }) {
   const formatDate = `${habitCreated.getFullYear()}-${
     habitCreated.getMonth() + 1
   }-${habitCreated.getDate()}`;
+
+  // Notification Creation
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   function handleCreateHabit() {
     if (habitInput === undefined || frequencyInput === undefined) {
@@ -91,16 +105,56 @@ export default function HabitPage({ route }) {
       }).then(() => {
         Alert.alert("Sucesso na atualização do hábito");
         if (!notificationToggle) {
-        
+          NotificationService.deleteNotification(habitInput);
         } else {
-     
+          NotificationService.createNotification(
+            habitInput,
+            frequencyInput,
+            dayNotification,
+            timeNotification
+          );
         }
-      navigation.navigate("Home", {
-        updatedHabit: `Updated in ${habit?.habitArea}`,
+        navigation.navigate("Home", {
+          updatedHabit: `Updated in ${habit?.habitArea}`,
+        });
       });
-    });
+    }
   }
-}
+
+  useEffect(() => {
+    if (habit?.habitHasNotification == 1) {
+      setNotificationToggle(true);
+      setDayNotification(habit?.habitNotificationFrequency);
+      setTimeNotification(habit?.habitNotificationTime);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (notificationToggle === false) {
+      setTimeNotification(null);
+      setDayNotification(null);
+    }
+  }, [notificationToggle]);
+
+  // Notification Get Token
+  useEffect(() => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>

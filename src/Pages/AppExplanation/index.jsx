@@ -1,5 +1,5 @@
-import React, { useState} from "react";
-import { View, Text, StyleSheet, ScrollView} from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import DefaultButton from "../../Components/Common/DefaultButton";
@@ -10,9 +10,12 @@ export default function AppExplanation() {
   const navigation = useNavigation();
   const [showHome, setShowHome] = useState("false");
   const startDate = new Date();
-  const appStartData = `${startDate.getFullYear()}-${startDate.getMonth()}-${startDate.getDate()}`;
 
-	function handleNavHome() {
+  const month = `${startDate.getMonth() + 1}`.padStart(2, "0");
+  const day = `${startDate.getDate()}`.padStart(2, "0");
+  const appStartData = `${startDate.getFullYear()}-${month}-${day}`;
+
+  function handleNavHome() {
     navigation.navigate("Home");
   }
 
@@ -28,7 +31,6 @@ export default function AppExplanation() {
 
     handleNavHome();
   }
-
 
   return (
     <View style={styles.container}>
